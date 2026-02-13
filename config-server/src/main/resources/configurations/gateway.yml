@@ -10,7 +10,7 @@ spring:
       oauth2:
         resourceserver:
           jwt:
-            issuer-uri: http://localhost:8080/realms/microservices-realm
+            issuer-uri: http://localhost:8089/realms/microservices-realm
 
   cloud:
     gateway:
@@ -20,6 +20,10 @@ spring:
             uri: lb://user-service
             predicates:
               - Path=/users/**
+          - id: BOOKING
+            uri: lb://BOOKING
+            predicates:
+              - Path=/api/bookings/**
 
 eureka:
   client:
@@ -27,3 +31,5 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
+
+
