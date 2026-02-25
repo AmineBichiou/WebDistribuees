@@ -24,10 +24,9 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}));
+                        .anyRequest().permitAll()  // Désactivé pour les tests Kafka
+                );
+                // .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}));  // Commenté pour tests
 
         return http.build();
     }
@@ -50,7 +49,7 @@ public class SecurityConfig {
     @Bean
     public JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder
-                .withJwkSetUri("http://localhost:8080/realms/microservices-realm/protocol/openid-connect/certs")
+                .withJwkSetUri("http://localhost:8089/realms/microservices-realm/protocol/openid-connect/certs")
                 .build();
     }
 }
