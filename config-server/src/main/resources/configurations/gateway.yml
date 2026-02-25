@@ -5,25 +5,26 @@ spring:
   application:
     name: gateway
 
-  spring:
-    security:
-      oauth2:
-        resourceserver:
-          jwt:
-            issuer-uri: http://localhost:8089/realms/microservices-realm
+  # OAuth2 Security - Désactivé temporairement pour tests Kafka
+  # security:
+  #   oauth2:
+  #     resourceserver:
+  #       jwt:
+  #         issuer-uri: http://localhost:8089/realms/microservices-realm
 
   cloud:
     gateway:
-      mvc:
-        routes:
-          - id: user-service
-            uri: lb://user-service
-            predicates:
-              - Path=/users/**
-          - id: BOOKING
-            uri: lb://BOOKING
-            predicates:
-              - Path=/api/bookings/**
+      server:
+        webmvc:
+          routes:
+            - id: user-service
+              uri: lb://user-service
+              predicates:
+                - Path=/users/**
+            - id: BOOKING
+              uri: lb://BOOKING
+              predicates:
+                - Path=/api/bookings/**
 
 eureka:
   client:

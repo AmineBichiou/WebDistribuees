@@ -5,8 +5,10 @@ import com.hotel.booking.dto.BookingResponse;
 import com.hotel.booking.dto.BookingUpdateRequest;
 import com.hotel.booking.entity.Booking;
 import com.hotel.booking.entity.BookingStatus;
+import com.hotel.booking.event.BookingEvent;
 import com.hotel.booking.exception.BookingNotFoundException;
 import com.hotel.booking.exception.InvalidBookingException;
+import com.hotel.booking.kafka.KafkaProducerService;
 import com.hotel.booking.repository.BookingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
+    private final KafkaProducerService kafkaProducerService;
 
     /**
      * Créer une nouvelle réservation
@@ -61,6 +65,9 @@ public class BookingService {
         // Sauvegarder
         Booking savedBooking = bookingRepository.save(booking);
         log.info("Booking created successfully with confirmation number: {}", savedBooking.getConfirmationNumber());
+
+        // Publier l'événement Kafka
+        publishBookingEvent(savedBooking, "CREATED");
 
         return mapToResponse(savedBooking);
     }
@@ -164,6 +171,9 @@ public class BookingService {
         Booking updatedBooking = bookingRepository.save(booking);
         log.info("Booking updated successfully: {}", id);
 
+        // Publier l'événement Kafka
+        publishBookingEvent(updatedBooking, "UPDATED");
+
         return mapToResponse(updatedBooking);
     }
 
@@ -188,6 +198,9 @@ public class BookingService {
         booking.setStatus(BookingStatus.CANCELLED);
         Booking cancelledBooking = bookingRepository.save(booking);
         log.info("Booking cancelled successfully: {}", id);
+
+        // Publier l'événement Kafka
+        publishBookingEvent(cancelledBooking, "CANCELLED");
 
         return mapToResponse(cancelledBooking);
     }
@@ -242,6 +255,30 @@ public class BookingService {
      */
     private String generateConfirmationNumber() {
         return "BK-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
+
+    /**
+     * Publier un événement Kafka pour une réservation
+     */
+    private void publishBookingEvent(Booking booking, String eventType) {
+        BookingEvent event = BookingEvent.builder()
+                .bookingId(booking.getId())
+                .confirmationNumber(booking.getConfirmationNumber())
+                .eventType(eventType)
+                .roomId(booking.getRoomId())
+                .hotelId(booking.getHotelId())
+                .userId(booking.getUserId())
+                .checkInDate(booking.getCheckInDate())
+                .checkOutDate(booking.getCheckOutDate())
+                .numberOfGuests(booking.getNumberOfGuests())
+                .numberOfNights(booking.getNumberOfNights())
+                .pricePerNight(booking.getPricePerNight())
+                .totalPrice(booking.getTotalPrice())
+                .status(booking.getStatus())
+                .eventTime(LocalDateTime.now())
+                .build();
+        
+        kafkaProducerService.sendBookingEvent(event);
     }
 
     /**

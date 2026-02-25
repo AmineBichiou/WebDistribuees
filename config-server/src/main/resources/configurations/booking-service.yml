@@ -21,6 +21,15 @@ spring:
     console:
       enabled: true
       path: /h2-console
+  
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
 
 
 # management:
@@ -45,3 +54,7 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
+# Kafka Topics
+kafka:
+  topic:
+    booking-events: booking-events
