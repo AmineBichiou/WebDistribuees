@@ -1,0 +1,6 @@
+# Spring Boot application.yml for avis-microservice
+spring:
+  application:
+    name: avis-service
+  config:
+    import: optional:configserver:http://localhost:8888

@@ -15,4 +15,22 @@ public class AvisService {
     public List<Avis> getAllAvis() {
         return avisRepository.findAll();
     }
+
+    public Avis saveAvis(Avis avis) {
+        return avisRepository.save(avis);
+    }
+
+    public Avis updateAvis(Long id, Avis avis) {
+        Avis existing = avisRepository.findById(id).orElse(null);
+        if (existing != null) {
+            existing.setCommentaire(avis.getCommentaire());
+            existing.setNote(avis.getNote());
+            return avisRepository.save(existing);
+        }
+        return null;
+    }
+
+    public void deleteAvis(Long id) {
+        avisRepository.deleteById(id);
+    }
 }
