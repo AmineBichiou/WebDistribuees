@@ -5,11 +5,13 @@ import com.hotel.booking.dto.BookingResponse;
 import com.hotel.booking.dto.BookingUpdateRequest;
 import com.hotel.booking.entity.BookingStatus;
 import com.hotel.booking.service.BookingService;
+import com.hotel.booking.util.JwtUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,14 +23,27 @@ import java.util.List;
 public class BookingController {
 
     private final BookingService bookingService;
+    private final JwtUtil jwtUtil;
 
     /**
      * Créer une nouvelle réservation
      * POST /api/bookings
+     * Le userId est extrait du JWT token
      */
     @PostMapping
-    public ResponseEntity<BookingResponse> createBooking(@Valid @RequestBody BookingRequest request) {
-        log.info("POST /api/bookings - Creating booking for user: {}", request.getUserId());
+    public ResponseEntity<BookingResponse> createBooking(
+            @Valid @RequestBody BookingRequest request,
+            Authentication authentication) {
+        
+        // Extraire l'utilisateur du JWT
+        String username = jwtUtil.getUsernameFromAuth(authentication);
+        String keycloakId = jwtUtil.getUserIdFromAuth(authentication);
+        
+        log.info("POST /api/bookings - Creating booking for user: {} (Keycloak ID: {})", username, keycloakId);
+        
+        // Injecter le userId dans la requête
+        request.setUserId(keycloakId != null ? keycloakId : username);
+        
         BookingResponse response = bookingService.createBooking(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

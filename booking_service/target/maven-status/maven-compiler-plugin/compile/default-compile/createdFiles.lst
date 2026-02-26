@@ -10,8 +10,10 @@ com\hotel\booking\dto\BookingRequest.class
 com\hotel\booking\dto\BookingResponse.class
 com\hotel\booking\BookingServiceApplication.class
 com\hotel\booking\controller\BookingController.class
+com\hotel\booking\config\SecurityConfig.class
 com\hotel\booking\exception\GlobalExceptionHandler.class
 com\hotel\booking\entity\Booking.class
+com\hotel\booking\util\JwtUtil.class
 com\hotel\booking\dto\BookingUpdateRequest.class
 com\hotel\booking\entity\BookingStatus.class
 com\hotel\booking\exception\InvalidBookingException.class

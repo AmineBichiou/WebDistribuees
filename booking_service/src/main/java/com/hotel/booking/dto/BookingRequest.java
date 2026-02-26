@@ -19,7 +19,7 @@ public class BookingRequest {
     @NotNull(message = "Hotel ID is required")
     private Long hotelId;
 
-    @NotBlank(message = "User ID is required")
+    // userId sera extrait du JWT token, pas du body
     private String userId;
 
     @NotNull(message = "Check-in date is required")
