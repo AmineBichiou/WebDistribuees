@@ -1,0 +1,7 @@
+com\esprit\avis\controller\Avis.class
+com\esprit\avis\service\AvisService.class
+com\esprit\avis\controller\AvisController.class
+com\esprit\avis\repository\AvisRepository.class
+com\esprit\avis\controller\AvisService.class
+com\esprit\avis\AvisManagementApplication.class
+com\esprit\avis\entities\Avis.class
