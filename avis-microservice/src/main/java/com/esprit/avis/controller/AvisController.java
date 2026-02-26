@@ -1,27 +1,17 @@
 package com.esprit.avis.controller;
 
+import com.esprit.avis.entities.Avis;
+import com.esprit.avis.service.AvisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// Simple DTO for demonstration
-class Avis {
-    public Long id;
-    public String message;
-}
-
-// Service interface
-interface AvisService {
-    List<Avis> getAllAvis();
-    Avis saveAvis(Avis avis);
-    Avis updateAvis(Long id, Avis avis);
-    void deleteAvis(Long id);
-}
 
 @RestController
 public class AvisController {
-
+    
+@Autowired
     private AvisService avisService;
 
     @GetMapping("/avis")
