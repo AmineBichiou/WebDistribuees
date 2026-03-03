@@ -1,0 +1,55 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: gateway
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/microservices-realm
+          audiences: account
+
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: user-service-nodejs
+              uri: http://localhost:3001
+              predicates:
+                - Path=/api/users/**
+            - id: BOOKING
+              uri: lb://BOOKING
+              predicates:
+                - Path=/api/bookings/**
+            - id: EMPLOYEE
+              uri: lb://employee-service
+              predicates:
+                - Path=/api/employees/**
+            - id: hotel-service
+              uri: lb://hotel-service
+              predicates:
+                - Path=/hotels/**
+            - id: avis-service
+              uri: lb://avis-service
+              predicates:
+                - Path=/avis, /avis/**
+            - id: room-service
+              uri: lb://room-service
+              predicates:
+                - Path=/api/rooms/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
