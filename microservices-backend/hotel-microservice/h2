@@ -1,0 +1,4 @@
+org.hibernate.dialect.H2Dialect
+jdbc:h2:file:./Database/Data/db
+db
+
