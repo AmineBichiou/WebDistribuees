@@ -4,6 +4,7 @@ import './App.css'
 import { initKeycloak, getUser, login, logout } from './services/keycloakService'
 import Hotel from './components/Hotel'
 import Avis from './components/Avis'
+import Booking from './components/Booking'
 
 function App() {
   const [initialized, setInitialized] = useState(false)
@@ -46,13 +47,15 @@ function App() {
       </div>
 
       <nav>
-        <Link to="/">Home</Link> | <Link to="/hotels">Hotels</Link> | <Link to="/avis">Avis</Link>
+        <Link to="/">Home</Link> | <Link to="/hotels">Hotels</Link> | <Link to="/avis">Avis</Link> | <Link to="/booking">Booking</Link>
       </nav>
 
       <Routes>
         <Route path="/" element={<h2>Welcome, select a page from the nav.</h2>} />
         <Route path="/hotels" element={<Hotel />} />
         <Route path="/avis" element={<Avis />} />
+        <Route path="/booking" element={<Booking />} />
+
       </Routes>
     </div>
   )
