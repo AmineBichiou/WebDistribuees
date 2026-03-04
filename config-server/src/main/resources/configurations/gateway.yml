@@ -29,6 +29,11 @@ spring:
               uri: lb://employee-service
               predicates:
                 - Path=/api/employees/**
+            - id: hotel-service
+              uri: lb://hotel-service
+              predicates:
+                - Path=/hotels/**
+
 
 eureka:
   client:
